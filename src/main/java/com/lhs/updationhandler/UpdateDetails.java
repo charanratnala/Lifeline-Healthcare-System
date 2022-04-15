@@ -24,6 +24,10 @@ public class UpdateDetails {
 
 	@Autowired
 	RegistrationRepo registrationRepo;
+	
+	
+	
+	
 
 	@PutMapping("/updatedetails")
 	public ResponseEntity<String> updateCurrentUser(@Valid @RequestBody DetailsUpdationJavaBean updates, Principal principle) {

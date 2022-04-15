@@ -1,20 +1,18 @@
 package com.lhs.dto;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-import com.lhs.entity.*;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lhs.entity.Roles;
 
 public class RegistrationDto {
 	@NotEmpty(message = "firstname should be there")
@@ -121,6 +119,17 @@ public class RegistrationDto {
 	@Pattern(regexp = ".+@.+\\..+", message = "Please provide  valid email address")
 	@Column(unique = true)
 	private String email;
+	@JsonFormat(pattern = "HH:mm")
+	@JsonDeserialize(using = SqlTimeDeserializer.class)
+	@Column(name = "start_time")
+	private Time currentTime[];
+	public Time[] getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(Time[] currentTime) {
+		this.currentTime = currentTime;
+	}
 
 	public String getLastName() {
 		return lastName;

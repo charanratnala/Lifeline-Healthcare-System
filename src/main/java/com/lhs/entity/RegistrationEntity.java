@@ -1,15 +1,21 @@
 package com.lhs.entity;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @Entity
 public class RegistrationEntity {
@@ -18,10 +24,23 @@ public class RegistrationEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String firstName;
+	private Timestamp createdAt= new Timestamp(System.currentTimeMillis());
 
 	private String lastName;
 	private String username;
 	private String password;
+
+	@JsonFormat(pattern = "HH:mm")
+	@JsonDeserialize(using = SqlTimeDeserializer.class)
+	@Column(name = "start_time")
+	private Time currentTime[];
+	public Time[] getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(Time[] currentTime) {
+		this.currentTime = currentTime;
+	}
 
 	private String dob;
 

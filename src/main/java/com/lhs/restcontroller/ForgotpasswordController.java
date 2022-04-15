@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.mail.MessagingException;
 import javax.naming.directory.InvalidAttributeIdentifierException;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,18 @@ public class ForgotpasswordController {
 	int random;
 
 	// private final LoadingCache<UUID, Integer> oneTimePasswordCache;
+	
+	
+	@GetMapping("/gg")
+	public ResponseEntity<RegistrationEntity> updateNewPassword( Principal principle) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		RegistrationEntity resPasscode = rep.findByUsername(auth.getName());
+		return new ResponseEntity<RegistrationEntity>(resPasscode, HttpStatus.OK);
+		
+		
+	}
+
 
 	@GetMapping("/forgotpassword")
 	public ResponseEntity<String> getResponse() {
@@ -97,9 +110,12 @@ public class ForgotpasswordController {
 	}
 
 	@PostMapping("/otp/")
-	private ResponseEntity<String> validateOtp(@RequestBody RequestOtp otp) throws ExecutionException {
+	private ResponseEntity<String> validateOtp(@RequestBody RequestOtp otp,HttpSession session) throws ExecutionException {
 
-		if (random == otp.getOtp()) {
+		session.setAttribute("myotp",random);
+		int motp=(int)session.getAttribute("myotp");
+		
+		if (motp == otp.getOtp()) {
 			res = "ok";
 			return new ResponseEntity<String>("valid otp   ", HttpStatus.OK);
 
