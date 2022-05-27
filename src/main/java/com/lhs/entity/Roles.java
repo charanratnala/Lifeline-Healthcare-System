@@ -10,10 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-
-
-
 
 @Entity
 public class Roles {
@@ -24,8 +20,8 @@ public class Roles {
 
 	private String rolename;
 
-@ManyToMany(cascade = CascadeType.MERGE, fetch=FetchType.LAZY,mappedBy = "role")
-   List<RegistrationEntity> registerentity= new ArrayList<RegistrationEntity>();
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "role")
+	List<RegistrationEntity> registerentity = new ArrayList<RegistrationEntity>();
 
 	public int getId() {
 		return id;

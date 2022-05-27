@@ -4,8 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
 public class RequestEmail {
-	
-	
+
 	public RequestEmail() {
 		super();
 	}
@@ -14,6 +13,7 @@ public class RequestEmail {
 		super();
 		this.email = email;
 	}
+
 	@Email(message = "Please provide a valid email address")
 	@Pattern(regexp = ".+@.+\\..+", message = "Please provide  valid email address")
 	private String email;
@@ -25,6 +25,5 @@ public class RequestEmail {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
 
 }

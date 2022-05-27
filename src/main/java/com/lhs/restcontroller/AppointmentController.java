@@ -2,7 +2,11 @@ package com.lhs.restcontroller;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -12,15 +16,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lhs.dao.AppointmentRepository;
 import com.lhs.dao.DoctorRepo;
 import com.lhs.dao.PatientRepo;
 import com.lhs.dao.Slot;
 import com.lhs.dao.SlotHandle;
+import com.lhs.entity.Appointment;
 import com.lhs.entity.AppointmentStatus;
 import com.lhs.entity.AppointmentTable;
 import com.lhs.entity.Doctor;
+import com.lhs.entity.RegistrationEntity;
 import com.lhs.entity.SlotEntity;
 import com.lhs.entity.SlotHandler;
 import com.lhs.payload.RequestList;
@@ -30,6 +38,9 @@ import com.lhs.service.DoctorService;
 @RestController
 @RequestMapping("/api")
 public class AppointmentController {
+	Logger logger = org.slf4j.LoggerFactory.getLogger(AppointmentController.class);
+	@Autowired
+	private AppointmentRepository appointmentRepository;
 
 	static int count = 0;
 	AppointmentStatus d;
@@ -47,72 +58,48 @@ public class AppointmentController {
 	@Autowired
 	Slot slot;
 
-	// DoctorService doctorService;
-
 	@Autowired
 	DoctorService doctorService;
 
 	@PostMapping("/adddoctors")
-	public ResponseEntity<String> addDoctor(@RequestBody Doctor doctor) {
-		if (doctor == null) {
-			throw new RuntimeException("null entity doctor");
-		}
-		// doctor.getSlotEntity().add(slotEntity);
+	public ResponseEntity<String> addDoctor(@RequestBody @Valid Doctor doctor) {
+		logger.info(" object entered into addDoctor method in AppointmentController ");
 		doctorService.addDoctor(doctor);
-
-		// doctor.setSlotEntity(null)
-		// return new ResponseEntity<String>("saved dear " + d.getName(),
-		// HttpStatus.OK);
+		logger.info("object successfully inserted into Db");
 		return ResponseEntity.ok("saved dear " + doctor.getDoctorName());
-
 	}
 
 	@PostMapping("/addSlots")
-	public ResponseEntity<String> addDoctors(@RequestBody SlotEntity slotEntity) {
-		if (slotEntity == null) {
-			throw new RuntimeException("null entity slotEntity");
-		}
-		// doctor.getSlotEntity().add(slotEntity);
-
+	@ResponseStatus(code = HttpStatus.OK)
+	public void addDoctors(@RequestBody SlotEntity slotEntity) {
+		logger.info("slot data entered into controller");
 		doctorService.addSlot(slotEntity);
-
-		// doctor.setSlotEntity(null)
-		// return new ResponseEntity<String>("saved dear " + d.getName(),
-		// HttpStatus.OK);
-		return ResponseEntity.ok("saved dear ");
-
+		logger.info("slot Data Successfully Saved from the service");
 	}
 
 	@GetMapping("/getslots/{pageNo}")
 	ResponseEntity<List<SlotEntity>> getSlots(@PathVariable("pageNo") int pageNo) {
+		logger.info("slot data entered into controller");
 		int pageSize = 3;
-
 		List<SlotEntity> sl = doctorService.getSlots(pageNo - 1, pageSize);
-
 		return new ResponseEntity<List<SlotEntity>>(sl, HttpStatus.OK);
 
 	}
 
 	@GetMapping("/getappointment")
 	public ResponseEntity<List<Doctor>> getDetails(@RequestBody RequestList req) {
-
 		List<Doctor> doctor = doctorRepo.findDetailsOfDoctor(req.getFrom(), req.getTo());
-
+		logger.info("getting data From the Service for GetDetails Method");
 		return new ResponseEntity<List<Doctor>>(doctor, HttpStatus.OK);
 
 	}
 
 	@GetMapping("/findbyspecialist")
 	public ResponseEntity<?> bookAppointment(@RequestBody RequestName name) {
-		// Doctor getDetails= doctorRepo.findBySpecialist(name.getSpecialist());
+		logger.info("entered into bookAppointment method In appointment Controller");
 		if (doctorRepo.existsByAvailableTime(name.getAvailableTime())) {
 			List<Doctor> getDetailss = doctorRepo.findBySpecialistAndCityAndAvailableTime(name.getSpecialist(),
 					name.getCity(), name.getAvailableTime());
-
-			// Doctor doc=null;
-//		  if(getDetailss.isPresent())
-//		  {
-			// doc=getDetailss.get();
 			return new ResponseEntity<List<Doctor>>(getDetailss, HttpStatus.OK);
 		}
 
@@ -121,18 +108,10 @@ public class AppointmentController {
 
 		}
 	}
-//		  else
-//			  
-//		  return new ResponseEntity<String>("Specialist not found",HttpStatus.NOT_FOUND);
-//		  
-//			  
 
 	@PostMapping("/fillpatientdetails")
 	ResponseEntity<AppointmentTable> fillDetails(
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestBody AppointmentTable patient) {
-
-		patient.setPreid(patient.getLocation().substring(0, 4) + " " + patient.getId());
-
 		AppointmentTable doc = doctorService.addDoctors(patient);
 		return new ResponseEntity<AppointmentTable>(doc, HttpStatus.OK);
 
@@ -144,103 +123,6 @@ public class AppointmentController {
 		List<AppointmentTable> doc = (List<AppointmentTable>) patientRepo.findAll();
 		return new ResponseEntity<List<AppointmentTable>>(doc, HttpStatus.OK);
 
-	}
-
-//	@GetMapping("/getbyname")
-//	ResponseEntity<List<Doctor>> getDoc(@RequestBody Doctor d)
-//	{
-//	 List<Doctor> da=	doctorRepo.findByDoctorName(d.getDoctorName());
-//		
-//		System.out.println(da);
-//		
-//		int sla;
-//		List<SlotEntity> sl=	slot.findAll();
-//		System.out.println(sl);
-//		for (SlotEntity slotEntity : sl) {
-//		
-//			System.out.println("after iterate"+slotEntity);
-//			//sla=slotEntity.get;
-//		}
-
-	// d.getSlotEntity().addAll(sl);
-
-	// return new ResponseEntity<List<Doctor>>(da, HttpStatus.OK);
-
-	// }
-
-	@PostMapping("/slot")
-	void addSlot(@RequestBody SlotEntity slotEntity) {
-
-		slot.save(slotEntity);
-	}
-
-//	@GetMapping("/getslot")
-//	ResponseEntity<List<SlotEntity>> getSlot(@RequestBody SlotEntity d)
-//	
-//	{
-//		//this.da.setSlotEntity(d);
-//		
-//		List<SlotEntity> sl=	slot.findAll();
-//		System.out.println(sl);
-//		return new  ResponseEntity<List<SlotEntity>>(sl,HttpStatus.OK); 
-//		
-//		
-//	}
-
-	@PostMapping("/addDate/{id}")
-	public ResponseEntity<String> addDate(@RequestBody SlotHandler slotHandler, @PathVariable("id") Doctor doc) {
-
-		List<SlotHandler> sl = slotHandlers.findByOperationDate(slotHandler.getOperationDate());
-
-		
-//		if(slotHandlers.findByOperationDateOrSlot1OrSlot2OrSlot3(slotHandler.getOperationDate(), slotHandler.getSlot1(), slotHandler.getSlot2(), slotHandler.getSlot3()) == AppointmentStatus) {
-//			return new ResponseEntity<String>("Opps !!!!!! TimeSlot was not there ! ", HttpStatus.BAD_REQUEST);
-//			
-//		}
-		
-		
-		
-		
-		System.out.println(slotHandlers.findByOperationDate(slotHandler.getOperationDate()));
-
-		doc.setId(doc.getId());
-		System.out.println(doc);
-
-		if (slot.existsByOperationDate(slotHandler.getOperationDate())) {
-
-			if (count == 0) {
-
-				if (d != AppointmentStatus.Booked) {
-
-					// if(slotHandler.getStatus()!=AppointmentStatus.Booked)
-
-					d = AppointmentStatus.Booked;
-					count++;
-
-					slotHandler.setStatus(d);
-					// System.out.println(slotHandler);
-					slotHandler.setDc(doc);
-					SlotHandler se = slotHandlers.save(slotHandler);
-					System.out.println(se);
-
-				}
-
-			}
-
-			else {
-
-				return new ResponseEntity<String>("Opps !!!!!! TimeSlot was not there ! ", HttpStatus.BAD_REQUEST);
-
-			}
-		}
-
-		// find by not working......
-
-		else {
-			return new ResponseEntity<String>("Opps !!!!!! TimeSlot was not there ! ", HttpStatus.BAD_REQUEST);
-		}
-
-		return new ResponseEntity<String>("Dear  " + " Slot timing has Booked Successfully", HttpStatus.OK);
 	}
 
 	@GetMapping("/getByDate/{operationDate}")
@@ -259,4 +141,77 @@ public class AppointmentController {
 
 	}
 
+	@GetMapping("/get")
+	private Iterable<Appointment> getAppointment() {
+
+		return appointmentRepository.findAll();
+
+	}
+
+	@GetMapping("/book/{id}")
+	private ResponseEntity<Appointment> bookAppointment(@PathVariable("id") Integer Id) {
+		Optional<Appointment> aptmt = appointmentRepository.findById(Id);
+		Appointment appointment = aptmt.get();
+		if (appointment.getAppointmentStatus() == false)
+			appointment.setAppointmentStatus(true);
+		appointmentRepository.save(appointment);
+
+		return new ResponseEntity<Appointment>(appointment, HttpStatus.OK);
+	}
+
+	@PostMapping("/addSlotDoc/{id}/{ids}")
+	public ResponseEntity<Appointment> addSlotsDoc(@RequestBody Appointment appointment,
+			@PathVariable("id") Doctor doctor, @PathVariable("ids") RegistrationEntity registrationEntity) {
+		if (appointment == null) {
+			throw new RuntimeException();
+		} else {
+			Doctor doc = new Doctor();
+			RegistrationEntity appointmen = new RegistrationEntity();
+			appointmen.setId(registrationEntity.getId());
+			doc.setId(doctor.getId());
+			appointment.setDoc(doctor);
+
+			appointment.setRegistrationEntity(appointmen);
+			appointmentRepository.save(appointment);
+			return new ResponseEntity<Appointment>(appointment, HttpStatus.OK);
+
+		}
+	}
+
+	//
+	@PostMapping("/addDate/{id}")
+	public ResponseEntity<String> addDate(@RequestBody SlotHandler slotHandler, @PathVariable("id") Doctor doc) {
+
+		// List<SlotHandler> sl =
+		// slotHandlers.findByOperationDate(slotHandler.getOperationDate());
+
+		doc.setId(doc.getId());
+		System.out.println(doc);
+
+		if (slot.existsByOperationDate(slotHandler.getOperationDate())) {
+
+			if (slotHandlers.existsBySlot1(slotHandler.getSlot1())) {
+
+				d = AppointmentStatus.Booked;
+
+				slotHandler.setSlot1status(true);
+				slotHandler.setDc(doc);
+				SlotHandler se = slotHandlers.save(slotHandler);
+				System.out.println(se);
+
+			} else {
+				System.out.println("error");
+			}
+
+		}
+
+		else {
+
+			return new ResponseEntity<String>("Opps !!!!!! TimeSlot was not there ! ", HttpStatus.BAD_REQUEST);
+
+		}
+		return new ResponseEntity<String>("Dear  " + " Slot timing has Booked Successfully", HttpStatus.OK);
+	}
+
+	// find by not working......
 }

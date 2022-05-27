@@ -14,8 +14,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class JwtUtil {
+	// @Value("${jwt.refreshExpirationDateInMs}")
+	private String SECRET_KEYS;
 
 	private String SECRET_KEY = "secret";
+	private int refreshExpirationDateInMs;
 
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -32,6 +35,10 @@ public class JwtUtil {
 
 	private Claims extractAllClaims(String token) {
 		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+	}
+
+	public void setRefreshExpirationDateInMs(int refreshExpirationDateInMs) {
+		this.refreshExpirationDateInMs = refreshExpirationDateInMs;
 	}
 
 	private Boolean isTokenExpired(String token) {

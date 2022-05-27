@@ -16,21 +16,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	
-	
-	
-	@ExceptionHandler(ExceptionPayload.class) 
+	@ExceptionHandler(ExceptionPayload.class)
 	public ResponseEntity<String> handle(ExceptionPayload error) {
 
 		return new ResponseEntity<String>("already username exists", HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<String> handled(RuntimeException error) {
 		return new ResponseEntity<String>("mail doesnt exists", HttpStatus.BAD_REQUEST);
 	}
-
 
 	@ExceptionHandler(UpdationException.class)
 	ResponseEntity<String> handle(UpdationException error) {
@@ -53,6 +49,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			map.put(fieldname, message);
 		});
 		return new ResponseEntity<Object>(map, HttpStatus.BAD_REQUEST);
+
+	}
+
+	@ExceptionHandler(AppointmentControllerCustomException.class)
+	public ResponseEntity<String> handleAppointmentController(
+			AppointmentControllerCustomException appointmentControllerCustomException) {
+		return new ResponseEntity<String>("Some thing went Wrong in Appointment Controller !", HttpStatus.BAD_REQUEST);
 
 	}
 

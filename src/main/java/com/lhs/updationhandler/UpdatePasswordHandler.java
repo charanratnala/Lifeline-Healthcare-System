@@ -1,9 +1,6 @@
 package com.lhs.updationhandler;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -36,7 +33,8 @@ public class UpdatePasswordHandler {
 	RegistrationRepo registrationRepo;
 
 	@PutMapping("/updatepasscode")
-	public ResponseEntity<String> updateCurrentUser(@Valid @RequestBody UpdatePasswordJavaBean updates, Principal principle) {
+	public ResponseEntity<String> updateCurrentUser(@Valid @RequestBody UpdatePasswordJavaBean updates,
+			Principal principle) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		RegistrationEntity resPasscode = registrationRepo.findByUsername(auth.getName());
@@ -44,15 +42,15 @@ public class UpdatePasswordHandler {
 		if (updates.getNewPassword() != null && !updates.getNewPassword().isEmpty()
 				&& !updates.getNewPassword().contains(" ") && !updates.getNewPassword().equals("")) {
 
-			if(this.bcrypt.matches(updates.getOldPassword(), resPasscode.getPassword())) {
+			if (this.bcrypt.matches(updates.getOldPassword(), resPasscode.getPassword())) {
 				resPasscode.setPassword(bcrypt.encode(updates.getNewPassword()));
-			registrationRepo.save(resPasscode);
-			return new ResponseEntity("Password Updated sucessfully ", HttpStatus.ACCEPTED);}
+				registrationRepo.save(resPasscode);
+				return new ResponseEntity("Password Updated sucessfully ", HttpStatus.ACCEPTED);
+			}
 
 			else {
-				
 
-			return new ResponseEntity("Please enter valid old Password ", HttpStatus.BAD_REQUEST);
+				return new ResponseEntity("Please enter valid old Password ", HttpStatus.BAD_REQUEST);
 			}
 		}
 
@@ -64,5 +62,4 @@ public class UpdatePasswordHandler {
 
 	}
 
-	
 }

@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ForgotNewPassword {
 
-	
-	@Size(min = 8,  message = "u must enter min 8 characters.....")
+	@Size(min = 8, message = "u must enter min 8 characters.....")
 	String newPassword;
 
 }

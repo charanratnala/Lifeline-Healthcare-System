@@ -24,7 +24,7 @@ public class RegistrationEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String firstName;
-	private Timestamp createdAt= new Timestamp(System.currentTimeMillis());
+	private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
 	private String lastName;
 	private String username;
@@ -34,6 +34,7 @@ public class RegistrationEntity {
 	@JsonDeserialize(using = SqlTimeDeserializer.class)
 	@Column(name = "start_time")
 	private Time currentTime[];
+
 	public Time[] getCurrentTime() {
 		return currentTime;
 	}
@@ -145,8 +146,6 @@ public class RegistrationEntity {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
-	
 
 	public String getFirstName() {
 		return firstName;

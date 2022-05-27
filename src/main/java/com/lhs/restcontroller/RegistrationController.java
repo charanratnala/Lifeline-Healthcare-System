@@ -87,37 +87,14 @@ public class RegistrationController {
 		return ResponseEntity.ok(new JwtResponse(jwt));
 	}
 
-	
-	
-	
-	
-	
-	
 	@GetMapping("/getregister")
-	List<RegistrationEntity> gget()
-	{
-		
-	List<RegistrationEntity>	d=(List<RegistrationEntity>) registrationRepo.findAll();
-	
-	
-	
-	return d;
-		
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	List<RegistrationEntity> gget() {
 
+		List<RegistrationEntity> d = (List<RegistrationEntity>) registrationRepo.findAll();
+
+		return d;
+
+	}
 
 	@GetMapping("/fulldetail")
 	ResponseEntity<UserDetails> currentUser(Principal principle)
@@ -132,47 +109,6 @@ public class RegistrationController {
 			return ResponseEntity.ok(currentUser);
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 //	@GetMapping("/getdetail")
 //	public ResponseEntity<String> updateCurrentUser(@Valid @RequestBody UpdatePassword updates, Principal principle) {

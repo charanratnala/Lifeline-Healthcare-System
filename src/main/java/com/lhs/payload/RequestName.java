@@ -1,7 +1,5 @@
 package com.lhs.payload;
 
-
-
 import java.sql.Date;
 
 public class RequestName {
@@ -36,7 +34,5 @@ public class RequestName {
 	public void setAvailableTime(Date availableTime) {
 		this.availableTime = availableTime;
 	}
-
-	
 
 }

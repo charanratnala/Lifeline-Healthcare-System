@@ -94,8 +94,10 @@ public class RegistrationDto {
 	private String gender;
 	@Size(min = 10, max = 10, message = "please enter valid mobile number")
 	private String phoneNo;
-	//@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	//@JoinTable(name="Register_Role", joinColumns = @JoinColumn(name="RegistrationEntity_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
+	// @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	// @JoinTable(name="Register_Role", joinColumns =
+	// @JoinColumn(name="RegistrationEntity_id"),inverseJoinColumns =
+	// @JoinColumn(name="role_id"))
 	List<Roles> roles = new ArrayList<>();
 
 	public List<Roles> getRole() {
@@ -123,6 +125,7 @@ public class RegistrationDto {
 	@JsonDeserialize(using = SqlTimeDeserializer.class)
 	@Column(name = "start_time")
 	private Time currentTime[];
+
 	public Time[] getCurrentTime() {
 		return currentTime;
 	}

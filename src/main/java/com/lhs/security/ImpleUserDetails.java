@@ -1,20 +1,17 @@
 package com.lhs.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.lhs.entity.RegistrationEntity;
-import com.lhs.entity.Roles;
 
 public class ImpleUserDetails implements UserDetails {
 
-	RegistrationEntity reg;
+	private RegistrationEntity reg;
 
 	public ImpleUserDetails(RegistrationEntity reg) {
 		super();
@@ -23,22 +20,23 @@ public class ImpleUserDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+//
+//		List<Roles> rol = reg.getRole();
+//
+//		List<SimpleGrantedAuthority> simple = new ArrayList<SimpleGrantedAuthority>();
+//
+//		for (Roles roles : rol) {
+//
+//			simple.add(new SimpleGrantedAuthority(roles.getRolename()));
+//
+//		}
+//
+//		return simple;
 
-		List<Roles> rol = reg.getRole();
-
-		List<SimpleGrantedAuthority> simple = new ArrayList<SimpleGrantedAuthority>();
-
-		for (Roles roles : rol) {
-
-			simple.add(new SimpleGrantedAuthority(roles.getRolename()));
-
-		}
-
-		return simple;
-
-		//return Collections.singleton(new SimpleGrantedAuthority("USER"));
-
+		return Collections.singleton(new SimpleGrantedAuthority("USER"));
 	}
+
+	// return Collections.singleton(new SimpleGrantedAuthority("USER"));
 
 	@Override
 	public String getPassword() {

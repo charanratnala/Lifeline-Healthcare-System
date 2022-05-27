@@ -48,64 +48,18 @@ public class SecurityHandler extends WebSecurityConfigurerAdapter {
 		return super.authenticationManager();
 	}
 
+//"/authenticate", "/register"
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 ///authenticate", "/register","/api/getemail/","/api/otp/
-		http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll()
-				.antMatchers(HttpMethod.OPTIONS).permitAll().anyRequest().authenticated().and().exceptionHandling()
-				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll().antMatchers(HttpMethod.OPTIONS)
+				.permitAll().anyRequest().authenticated().and().exceptionHandling().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
 	}
-	
-	
-	
-	
-	
+
 	//
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	@RequestMapping("/k")
 	public void getCurrentUsera(Principal principal) {
