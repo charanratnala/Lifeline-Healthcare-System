@@ -83,7 +83,7 @@ public class DoctorController {
 	@GetMapping("/nextdate")
 	public ResponseEntity<?> getByNextDate() {
 		LocalDate nextDay = null;
-
+		logger.info("entered into next Date Api");
 		LocalDate today = LocalDate.now();
 
 		nextDay = today.plusDays(1);
@@ -91,6 +91,7 @@ public class DoctorController {
 		List<Appointment> f = new ArrayList<>();
 
 		List<Appointment> La = doctorServiceIm.getByDate(nextDay);
+		logger.info("fetched list of doctors by next Date");
 		La.stream().map(Appointment::getAppointmentStatus).collect(Collectors.toList());
 
 		for (Appointment s : La) {
@@ -98,7 +99,7 @@ public class DoctorController {
 			if (s.getAppointmentStatus() == true)
 
 				f.add(s);
-
+			logger.info("iterated nextDate");
 		}
 
 		return new ResponseEntity<List<Appointment>>(f, HttpStatus.OK);
@@ -148,11 +149,16 @@ public class DoctorController {
 
 	@GetMapping("/findProfile/{id}")
 	public ResponseEntity<?> getProfile(@PathVariable("id") Doctor doc) {
+
+		logger.info("entered into find Profile Api");
 		Optional<Doctor> dd = null;
 
 		if (doctorRepo.existsById(doc.getId()) && doc.getDoctorName() != null) {
+			logger.info(" finding if it is exists in findprofile & if doctor name== null");
 
 			dd = doctorRepo.findById(doc.getId());
+
+			logger.info("finding by id");
 			return new ResponseEntity<Optional<Doctor>>(dd, HttpStatus.OK);
 		}
 
@@ -164,8 +170,10 @@ public class DoctorController {
 	public ResponseEntity<?> upcomingAp() {
 		LocalDate datetime1 = LocalDate.now();
 
-		List<Appointment> La = appointmentRepository.findAllDateAfter(datetime1);
+		logger.info("entered into upcomingappoinments method ");
 
+		List<Appointment> La = appointmentRepository.findAllDateAfter(datetime1);
+		logger.info("finding all the upcomingappoinments");
 		La.stream().map(Appointment::getAppointmentStatus).collect(Collectors.toList());
 
 		List<Appointment> dummy = new ArrayList<>();
@@ -181,11 +189,14 @@ public class DoctorController {
 
 	}
 
-	@GetMapping("/update/{id}")
-	public ResponseEntity<Appointment> updateDoctorSlot(@PathVariable("id") Doctor doctor) {
+	@GetMapping("/getDoc/{id}")
+	public ResponseEntity<Appointment> updateDoctorSlot(@PathVariable("id") Appointment doctor) {
 
-		doctor.setId(doctor.getId());
-		Appointment doc = appointmentRepository.findByDocId(doctor.getId());
+		logger.info("entered into updateDoctorSlot");
+		System.out.println(doctor.getId());
+		Appointment doc = appointmentRepository.findByDoc_Id(doctor.getId());
+		System.out.println(doc);
+		logger.info("fetched doctor based on docId");
 		return new ResponseEntity<Appointment>(doc, HttpStatus.OK);
 
 	}
@@ -193,6 +204,7 @@ public class DoctorController {
 	@PutMapping("/updatedDoctorData/{id}/{ids}")
 	public ResponseEntity<Appointment> updateDoctorDetail(@RequestBody Appointment appointment,
 			@PathVariable("id") Doctor doc, @PathVariable("ids") RegistrationEntity registrationEntity) {
+		logger.info(" entered into updatedDoctorData api");
 		String subject = "Updated Slot From LHS Application";
 		String body = "<h1><br><b>Hi Folks</b>,<br><i>look at this nice logo :)</i></h1>" + "<h1>Dear</h1>" + "<h1>"
 				+ registrationEntity.getUsername() + "</h1>"
@@ -211,9 +223,16 @@ public class DoctorController {
 			@PathVariable("id") RegistrationEntity registrationEntity)
 
 	{
-		doctorServiceIm.DoctorAssign(assignedEntity, registrationEntity);
 
+		logger.info("entered into assign medicine method");
+		doctorServiceIm.DoctorAssign(assignedEntity, registrationEntity);
+		logger.info(" added  medicine By Doctor");
 		return new ResponseEntity<String>("Saved", HttpStatus.OK);
+
+	}
+
+	@GetMapping("/{id}")
+	public void viewPatient(@PathVariable("id") Appointment appointment) {
 
 	}
 

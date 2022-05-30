@@ -21,7 +21,7 @@ public class Doctor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	@NotNull
 	private String doctorName;
 	@NotNull
